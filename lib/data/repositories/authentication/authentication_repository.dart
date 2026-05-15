@@ -57,13 +57,15 @@ class AuthenticationRepository extends GetxController {
       }
     } else{
       /// Local Storage
-      deviceStorage.writeIfNull('IsFirstTime', true);
+      // Check if it's the first time the app is opened
+      final isFirstTime = deviceStorage.read<bool>('IsFirstTime') ?? true;
 
-      deviceStorage.read('IsFirstTime') != true
-          ? Get.offAll(()=> const LoginScreen())
-          : Get.offAll(()=> const OnboardingScreen());
+      if (isFirstTime) {
+        Get.offAll(() => const OnboardingScreen());
+      } else {
+        Get.offAll(() => const LoginScreen());
+      }
     }
-
   }
 
 /* ---------------- Email & Password sign-in ---------------- */
@@ -197,6 +199,8 @@ class AuthenticationRepository extends GetxController {
   Future<void> logout() async {
     try {
       await FirebaseAuth.instance.signOut();
+      // Clear all local storage data that might keep the user "logged in"
+      await deviceStorage.erase(); // This is crucial!
       Get.offAll(() => const LoginScreen());
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
@@ -216,6 +220,8 @@ class AuthenticationRepository extends GetxController {
     try {
       await UserRepository.instance.removeUserRecord(_auth.currentUser!.uid);
       await _auth.currentUser?.delete();
+      // After deleting the account, also log out and clear storage
+      await logout(); // Call the updated logout method
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

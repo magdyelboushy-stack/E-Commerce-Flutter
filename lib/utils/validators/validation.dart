@@ -1,4 +1,3 @@
-
 class TValidator {
   /// Empty Text Validator
   static String? validateEmptyText(String? fieldName, String? value) {
@@ -57,14 +56,14 @@ class TValidator {
     }
 
     // Regular expression for phone number validation (assuming a 10-digit US phone number format)
-    final phoneRegExp = RegExp(r'^\d{10}$');
+    final phoneRegExp = RegExp(r'^\d{11}$');
 
     if (!phoneRegExp.hasMatch(value)) {
-      return 'Invalid phone number format (10 digits required).';
+      return 'Invalid phone number format (11 digits required).';
     }
 
     return null;
   }
 
-// Add more custom validators as needed for your specific requirements.
+  // Add more custom validators as needed for your specific requirements.
 }

@@ -39,5 +39,6 @@ class AppRoutes {
     GetPage(name: TRoutes.onBoarding, page: () => const OnboardingScreen()),
     GetPage(name: TRoutes.dev, page: () => const DevScreen()),
     // Add more GetPage entries as needed
+
   ];
 }
